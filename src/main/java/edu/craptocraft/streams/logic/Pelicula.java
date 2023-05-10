@@ -1,6 +1,8 @@
 package edu.craptocraft.streams.logic;
 
-public class Pelicula {
+import java.io.Serializable;
+
+public class Pelicula implements Serializable {
     
     String titulo = "";
     String year = "";

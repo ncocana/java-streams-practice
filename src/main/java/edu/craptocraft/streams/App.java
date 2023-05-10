@@ -13,7 +13,8 @@ public class App
         // List<Reservas> reservas = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         int opcion = 0;
-        String ruta = "";
+        String rutaEntrada = "";
+        String rutaSalida = "";
         
         do {
             System.out.println("\n--- Menú ---");
@@ -28,18 +29,21 @@ public class App
                 opcion = scanner.nextInt();
                 scanner.nextLine(); // Limpiar el buffer de entrada
                 if (opcion != 4 && opcion != 0) {
-                    ruta = LecturaEscrituraStreams.pedirRuta();
+                    System.out.print("Introduce la ruta del archivo: ");
+                    rutaEntrada = LecturaEscrituraStreams.pedirRuta();
+                    System.out.print("Introduce la ruta donde quieres guardar el archivo: ");
+                    rutaSalida = LecturaEscrituraStreams.pedirRuta();
                     // File path: .\src\main\resources\file.txt
                 }
                 switch (opcion) {
                     case 1:
-                        LecturaEscrituraStreams.leerEscribirByteByte(ruta);
+                        LecturaEscrituraStreams.leerEscribirByteByte(rutaEntrada, rutaSalida);
                         break;
                     case 2:
-                        LecturaEscrituraStreams.leerEscribirCarCar(ruta);
+                        LecturaEscrituraStreams.leerEscribirCarCar(rutaEntrada, rutaSalida);
                         break;
                     case 3:
-                        LecturaEscrituraStreams.leerEscribirBuffer(ruta);
+                        LecturaEscrituraStreams.leerEscribirBuffer(rutaEntrada, rutaSalida);
                         break;
                     // case 4:
                     //     LecturaEscrituraStreams.buscarLibroPorTitulo(libros);
