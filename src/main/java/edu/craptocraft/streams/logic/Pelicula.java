@@ -4,13 +4,13 @@ import java.io.Serializable;
 
 public class Pelicula implements Serializable {
     
-    String titulo = "";
-    String year = "";
-    String director = "";
-    String duracion = "";
-    String sinopsis = "";
-    String reparto = "";
-    String sesion = "";
+    private String titulo = "";
+    private String year = "";
+    private String director = "";
+    private String duracion = "";
+    private String sinopsis = "";
+    private String reparto = "";
+    private String sesion = "";
 
     public Pelicula(String titulo, String year, String director, String duracion, String sinopsis, String reparto, String sesion) {
         this.titulo = titulo;
