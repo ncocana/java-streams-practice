@@ -1,6 +1,7 @@
 package edu.craptocraft.streams.logic;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -8,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -117,39 +117,70 @@ public class LecturaEscrituraStreams {
         try (BufferedReader reader = new BufferedReader(new FileReader(pathFileInput));
             ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(pathFileOutput))) {
     
-            reader.lines()
-                    .map(line -> line.split("#"))
-                    .filter(campos -> campos.length == 7)
-                    .map(campos -> new Pelicula(campos[0], campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]))
-                    .forEach(pelicula -> {
-                        try {
-                            writer.writeObject(pelicula);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+            String cartelera = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+            String[] peliculas = cartelera.split("\\{");
+    
+            writer.writeObject(PRINT_CARTELERA + "\n");
+    
+            Stream.of(peliculas)
+                .map(pelicula -> pelicula.split("#"))
+                .filter(campos -> campos.length == 7)
+                .map(campos -> new Pelicula(campos[0], campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]))
+                .forEach(p -> {
+                    try {
+                        writer.writeObject(p.toString() + "\n");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
     
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // public static void leerObjEscribirCons(String pathFileInput) {
-    //     try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(pathFileInput))) {
+    public static void leerObjEscribirObj(String pathFileInput, String pathFileOutput) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(pathFileInput));
+            ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(pathFileOutput))) {
             
-    //         Object obj = reader.readObject();
-
-    //         reader.lines()
-    //                 .map(line -> line.split("#"))
-    //                 .filter(campos -> campos.length == 7)
-    //                 .map(campos -> new Pelicula(campos[0], campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]))
-    //                 .forEach(pelicula -> 
-    //                     System.out.println(pelicula.toString())
-    //                 );
+            Object obj = null;
+            do {
+                try {
+                    obj = ois.readObject();
+                    if (obj != null) {
+                        writer.writeObject(obj);
+                    }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } while (obj != null);
     
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
+        } catch (EOFException e) {
+            // Se ha llegado al final del archivo
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void leerObjEscribirCons(String pathFileInput) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(pathFileInput))) {
+            Object obj = null;
+            do {
+                try {
+                    obj = ois.readObject();
+                    if (obj != null) {
+                        System.out.println(obj);
+                    }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } while (obj != null);
+    
+        } catch (EOFException e) {
+            // Se ha llegado al final del archivo
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
